@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { QuestionCard } from "@/components/question-card";
 import { QuestionForm } from "@/components/question-form";
@@ -13,6 +13,15 @@ import { cn } from "@/lib/utils";
 const PAGE_SIZE = 10;
 
 export default function Home() {
+  const [bgTheme, setBgTheme] = useState<"space" | "cyber" | "minimal" | "aurora">("space");
+
+  const themes: Record<string, string> = {
+    space: "bg-slate-950 text-slate-100 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black",
+    cyber: "bg-zinc-950 text-zinc-50 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-950/20 via-zinc-950 to-black",
+    minimal: "bg-stone-50 text-stone-900 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-50/50 via-stone-50 to-stone-100",
+    aurora: "bg-emerald-950 text-emerald-50 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-teal-950/30 via-slate-950 to-black",
+  };
+
   const { questions, loading, loadingMore, hasMore, error, loadMore } =
     useQuestions(PAGE_SIZE);
   const spotlightRef = useRef<HTMLDivElement>(null);
@@ -39,7 +48,76 @@ export default function Home() {
     <>
       <div ref={spotlightRef} className="mouse-spotlight" aria-hidden />
 
-      <main className="relative mx-auto flex w-full max-w-4xl flex-col gap-10 px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
+      <main
+        className={cn(
+          themes[bgTheme],
+          "min-h-screen transition-all duration-700 ease-in-out pb-20",
+          "relative mx-auto flex w-full max-w-4xl flex-col gap-10 px-4 py-10 sm:px-6 sm:py-16 lg:px-8"
+        )}
+      >
+        {/* 背景主題選擇器 */}
+        <div className="w-full flex items-center justify-end gap-3">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="hidden sm:inline">背景風格：</span>
+          </div>
+          <div className="inline-flex items-center gap-2">
+            <button
+              type="button"
+              aria-pressed={bgTheme === "space"}
+              onClick={() => setBgTheme("space")}
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium",
+                bgTheme === "space"
+                  ? "bg-indigo-600 text-white"
+                  : "bg-white/6 text-white/90 hover:bg-white/10"
+              )}
+            >
+              🌌 太空
+            </button>
+
+            <button
+              type="button"
+              aria-pressed={bgTheme === "cyber"}
+              onClick={() => setBgTheme("cyber")}
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium",
+                bgTheme === "cyber"
+                  ? "bg-violet-600 text-white"
+                  : "bg-white/6 text-white/90 hover:bg-white/10"
+              )}
+            >
+              🔮 賽博
+            </button>
+
+            <button
+              type="button"
+              aria-pressed={bgTheme === "aurora"}
+              onClick={() => setBgTheme("aurora")}
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium",
+                bgTheme === "aurora"
+                  ? "bg-emerald-600 text-white"
+                  : "bg-white/6 text-white/90 hover:bg-white/10"
+              )}
+            >
+              🌲 極光
+            </button>
+
+            <button
+              type="button"
+              aria-pressed={bgTheme === "minimal"}
+              onClick={() => setBgTheme("minimal")}
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium",
+                bgTheme === "minimal"
+                  ? "bg-stone-800 text-white"
+                  : "bg-white/6 text-white/90 hover:bg-white/10"
+              )}
+            >
+              🥛 極簡白
+            </button>
+          </div>
+        </div>
         {/* ============ Header ============ */}
         <motion.header
           initial="hidden"

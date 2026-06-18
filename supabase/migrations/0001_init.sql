@@ -13,6 +13,10 @@ create table if not exists public.questions (
 create index if not exists questions_likes_created_idx
   on public.questions (likes desc, created_at desc);
 
+-- Add dislikes column (idempotent)
+alter table public.questions
+  add column if not exists dislikes integer not null default 0 check (dislikes >= 0);
+
 -- 2. answers 表（一對多：一個 question 有多個 answers）
 create table if not exists public.answers (
   id uuid primary key default gen_random_uuid(),
@@ -34,6 +38,17 @@ create table if not exists public.question_likes (
 
 create index if not exists question_likes_question_id_idx
   on public.question_likes (question_id);
+
+-- 3b. 按反對去重表：一個 anon_id 對一題只能 -1 一次
+create table if not exists public.question_dislikes (
+  question_id uuid not null references public.questions (id) on delete cascade,
+  anon_id text not null,
+  created_at timestamptz not null default now(),
+  primary key (question_id, anon_id)
+);
+
+create index if not exists question_dislikes_question_id_idx
+  on public.question_dislikes (question_id);
 
 -- 4. 開啟 Realtime（idempotent：判斷表是否已在 publication 內再加）
 do $$
@@ -125,6 +140,44 @@ grant execute on function public.increment_question_like(uuid, text) to anon, au
 
 comment on function public.increment_question_like(uuid, text) is
   'Atomically insert dedup row + increment questions.likes. Anon-callable via supabase.rpc().';
+
+-- RPC for dislikes: atomically insert dedup row + increment questions.dislikes
+create or replace function public.increment_question_dislike(
+  qid uuid,
+  anon text
+)
+returns integer
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  new_dislikes integer;
+begin
+  insert into public.question_dislikes (question_id, anon_id)
+  values (qid, anon)
+  on conflict do nothing;
+
+  if found then
+    update public.questions
+       set dislikes = dislikes + 1
+     where id = qid
+    returning dislikes into new_dislikes;
+  else
+    select dislikes into new_dislikes
+      from public.questions
+     where id = qid;
+  end if;
+
+  return new_dislikes;
+end;
+$$;
+
+revoke all on function public.increment_question_dislike(uuid, text) from public;
+grant execute on function public.increment_question_dislike(uuid, text) to anon, authenticated;
+
+comment on function public.increment_question_dislike(uuid, text) is
+  'Atomically insert dedup row + increment questions.dislikes. Anon-callable via supabase.rpc().';
 
 -- 7. seed：一筆示範資料
 insert into public.questions (content, likes)
