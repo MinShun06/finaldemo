@@ -163,9 +163,9 @@ export default function Home() {
               hidden: { opacity: 0, y: 14 },
               show: { opacity: 1, y: 0 },
             }}
-            className="font-display text-4xl leading-[0.95] tracking-tight sm:text-5xl"
+            className="font-display text-5xl font-semibold leading-tight tracking-tight sm:text-6xl"
           >
-            校園匿名提案與連署牆
+            NKUST 專屬的匿名提案與連署平台
           </motion.h1>
 
           <motion.p
@@ -173,13 +173,9 @@ export default function Home() {
               hidden: { opacity: 0, y: 10 },
               show: { opacity: 1, y: 0 },
             }}
-            className="max-w-2xl text-[15px] leading-relaxed text-muted-foreground sm:text-base"
+            className="max-w-3xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
           >
-            一道屬於校園的匿名提案與連署牆——
-            <span className="font-display italic text-foreground">
-              提案、附議、一起推動改變
-            </span>
-            。 即時同步、附議計數、公平公開。
+            你的聲音，就是推動校園改變的起點。即時互動、公開透明，讓每一份附議凝聚成實質的力量。
           </motion.p>
 
           <motion.div
