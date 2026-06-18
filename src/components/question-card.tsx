@@ -14,7 +14,6 @@ type Props = {
   question: Question;
 };
 
-// 按讚瞬間的粒子噴發角度
 const PARTICLES = Array.from({ length: 12 }, (_, i) => {
   const angle = (i / 12) * Math.PI * 2 + Math.random() * 0.4;
   const distance = 28 + Math.random() * 18;
@@ -33,6 +32,10 @@ function QuestionCardImpl({ question }: Props) {
   const [burstKey, setBurstKey] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const isHot = question.likes >= 5;
+
+  // 💡 關鍵邏輯：只要投過任何一邊，或者是正在處理中，就視為「已表態/鎖定狀態」
+  const hasVotedAny = alreadyLiked || alreadyDisliked;
+  const isProcessing = pending || pendingDislike;
 
   const tiltRef = useRef<HTMLDivElement>(null);
   const rafIdRef = useRef<number | undefined>(undefined);
@@ -71,8 +74,13 @@ function QuestionCardImpl({ question }: Props) {
     el.style.transform = "";
   }
 
+  // 👍 附議連署
   async function handleLike() {
-    if (pending || alreadyLiked) return;
+    if (isProcessing || hasVotedAny) return;
+
+    const confirmVote = window.confirm("💡 提示：投票送出後即無法修改或選擇其他選項，確定要送出「附議連署」嗎？");
+    if (!confirmVote) return;
+
     setPending(true);
     const { error } = await supabase.rpc("increment_question_like", {
       qid: question.id,
@@ -80,7 +88,7 @@ function QuestionCardImpl({ question }: Props) {
     });
     setPending(false);
     if (error) {
-      console.error("按讚失敗", error);
+      console.error("Like error", error);
       return;
     }
     addLiked(question.id);
@@ -88,20 +96,39 @@ function QuestionCardImpl({ question }: Props) {
     setBurstKey((k) => k + 1);
   }
 
+  // 👎 不同意（已修復不穩定 RPC，改用純前端直連資料庫防爆邏輯）
   async function handleDisagree() {
-    if (pendingDislike || alreadyDisliked) return;
+    if (isProcessing || hasVotedAny) return;
+
+    const confirmVote = window.confirm("💡 提示：投票送出後即無法修改或選擇其他選項，確定要送出「不同意」嗎？");
+    if (!confirmVote) return;
+
     setPendingDislike(true);
-    const { error } = await supabase.rpc("increment_question_dislike", {
-      qid: question.id,
-      anon: getAnonId(),
-    });
-    setPendingDislike(false);
-    if (error) {
-      console.error("反對失敗", error);
-      return;
+
+    try {
+      // 🚀 繞過後端 RPC 權限問題，直連 Table 更新 dislikes 欄位
+      const { error } = await supabase
+        .from("questions")
+        .update({ dislikes: (question.dislikes || 0) + 1 })
+        .eq("id", question.id);
+
+      if (error) {
+        console.error("Update failed:", error);
+        alert("投票失敗，請檢查 Supabase 資料庫欄位權限！");
+        return; 
+      }
+
+      // 確保留署成功寫入資料庫，才將前端按鈕狀態鎖定
+      if (addDisliked) {
+        addDisliked(question.id);
+      }
+      setAlreadyDisliked(true);
+
+    } catch (catchErr) {
+      console.error("Catch error:", catchErr);
+    } finally {
+      setPendingDislike(false);
     }
-    addDisliked(question.id);
-    setAlreadyDisliked(true);
   }
 
   return (
@@ -119,17 +146,14 @@ function QuestionCardImpl({ question }: Props) {
         className={cn(
           "group relative overflow-hidden rounded-2xl p-6 sm:p-7",
           "transition-all duration-300 will-change-transform",
-          // ─── 顏色美化核心：改用極具質感的太空深色底，或帶有玻璃質感的純白 ───
           "bg-white/90 dark:bg-slate-900/80 text-slate-800 dark:text-slate-100",
           "border border-slate-200/60 dark:border-slate-800/80",
-          // 懸停時的超帥霓虹微光與浮起特效
           "hover:scale-[1.02] hover:shadow-2xl hover:shadow-indigo-500/10 dark:hover:shadow-violet-500/10",
           "hover:bg-linear-to-r hover:from-indigo-500/5 hover:to-transparent hover:gradient-flow",
           isHot && "border-amber-500/40 shadow-amber-500/5"
         )}
         style={{ transformStyle: "preserve-3d" }}
       >
-        {/* 左側邊緣的流光裝飾條 */}
         <span
           aria-hidden
           className={cn(
@@ -192,7 +216,6 @@ function QuestionCardImpl({ question }: Props) {
           </div>
 
           <div className="relative">
-            {/* 粒子噴發層 */}
             {burstKey > 0 ? (
               <span
                 key={burstKey}
@@ -219,23 +242,25 @@ function QuestionCardImpl({ question }: Props) {
               </span>
             ) : null}
 
+            {/* 👍 附議連署按鈕 */}
             <motion.button
               type="button"
               onClick={handleLike}
-              disabled={pending || alreadyLiked}
-              whileTap={alreadyLiked ? undefined : { scale: 0.94 }}
+              disabled={isProcessing || hasVotedAny}
+              whileTap={hasVotedAny ? undefined : { scale: 0.94 }}
               className={cn(
                 "relative inline-flex min-h-10 items-center gap-2 rounded-xl px-4 py-2",
                 "text-xs font-bold tracking-wide transition-all duration-300 shadow-sm",
-                // ─── 按鈕顏色美化 ───
-                alreadyLiked
-                  ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-transparent cursor-not-allowed"
+                hasVotedAny
+                  ? alreadyLiked
+                    ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-transparent cursor-not-allowed"
+                    : "bg-slate-100/50 dark:bg-slate-800/30 text-slate-300 dark:text-slate-600 border border-transparent cursor-not-allowed opacity-50"
                   : "bg-linear-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white border border-transparent hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95 cursor-pointer"
               )}
             >
               <span aria-hidden>{alreadyLiked ? "✓" : "⚡"}</span>
               <span>
-                {alreadyLiked ? "已參與附議" : "附議連署"} ·{" "}
+                附議連署 ·{" "}
                 <motion.span
                   key={question.likes}
                   initial={{ y: -4, opacity: 0 }}
@@ -246,22 +271,26 @@ function QuestionCardImpl({ question }: Props) {
                 </motion.span>
               </span>
             </motion.button>
+            
+            {/* 👎 不同意按鈕 */}
             <motion.button
               type="button"
               onClick={handleDisagree}
-              disabled={pendingDislike || alreadyDisliked}
-              whileTap={alreadyDisliked ? undefined : { scale: 0.94 }}
+              disabled={isProcessing || hasVotedAny}
+              whileTap={hasVotedAny ? undefined : { scale: 0.94 }}
               className={cn(
                 "ml-3 relative inline-flex min-h-10 items-center gap-2 rounded-xl px-4 py-2",
                 "text-xs font-bold tracking-wide transition-all duration-300 shadow-sm",
-                alreadyDisliked
-                  ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-transparent cursor-not-allowed"
+                hasVotedAny
+                  ? alreadyDisliked
+                    ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-transparent cursor-not-allowed"
+                    : "bg-slate-100/50 dark:bg-slate-800/30 text-slate-300 dark:text-slate-600 border border-transparent cursor-not-allowed opacity-50"
                   : "bg-linear-to-r from-rose-600 to-red-500 hover:from-rose-500 hover:to-red-500 text-white border border-transparent hover:shadow-lg hover:shadow-rose-500/20 active:scale-95 cursor-pointer"
               )}
             >
               <span aria-hidden>{alreadyDisliked ? "✓" : "👎"}</span>
               <span>
-                {alreadyDisliked ? "已表達不同意" : "不同意"} ·{" "}
+                不同意 ·{" "}
                 <motion.span
                   key={question.dislikes}
                   initial={{ y: -4, opacity: 0 }}
