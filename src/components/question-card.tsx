@@ -96,7 +96,7 @@ function QuestionCardImpl({ question }: Props) {
     setBurstKey((k) => k + 1);
   }
 
-  // 👎 不同意
+  // 👎 不同意（已修復不穩定 RPC，改用純前端直連資料庫防爆邏輯）
   async function handleDisagree() {
     if (isProcessing || hasVotedAny) return;
 
@@ -106,28 +106,27 @@ function QuestionCardImpl({ question }: Props) {
     setPendingDislike(true);
 
     try {
-      const { error } = await supabase.rpc("increment_question_dislike", {
-        question_id: question.id
-      });
-
-      if (error) {
-        console.log("RPC failed, use update");
-        await supabase
-          .from("questions")
-          .update({ dislikes: (question.dislikes || 0) + 1 })
-          .eq("id", question.id);
-      }
-    } catch (catchErr) {
-      console.log("Catch error, use update", catchErr);
-      await supabase
+      // 🚀 繞過後端 RPC 權限問題，直連 Table 更新 dislikes 欄位
+      const { error } = await supabase
         .from("questions")
         .update({ dislikes: (question.dislikes || 0) + 1 })
         .eq("id", question.id);
-    } finally {
+
+      if (error) {
+        console.error("Update failed:", error);
+        alert("投票失敗，請檢查 Supabase 資料庫欄位權限！");
+        return; 
+      }
+
+      // 確保留署成功寫入資料庫，才將前端按鈕狀態鎖定
       if (addDisliked) {
         addDisliked(question.id);
       }
       setAlreadyDisliked(true);
+
+    } catch (catchErr) {
+      console.error("Catch error:", catchErr);
+    } finally {
       setPendingDislike(false);
     }
   }
@@ -243,7 +242,7 @@ function QuestionCardImpl({ question }: Props) {
               </span>
             ) : null}
 
-            {/* 👍 附議連署按鈕：只要投過任何一邊就被 disabled */}
+            {/* 👍 附議連署按鈕 */}
             <motion.button
               type="button"
               onClick={handleLike}
@@ -254,8 +253,8 @@ function QuestionCardImpl({ question }: Props) {
                 "text-xs font-bold tracking-wide transition-all duration-300 shadow-sm",
                 hasVotedAny
                   ? alreadyLiked
-                    ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-transparent cursor-not-allowed" // 自己投的按鈕樣式
-                    : "bg-slate-100/50 dark:bg-slate-800/30 text-slate-300 dark:text-slate-600 border border-transparent cursor-not-allowed opacity-50" // 投了另一邊而被禁用的樣式
+                    ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-transparent cursor-not-allowed"
+                    : "bg-slate-100/50 dark:bg-slate-800/30 text-slate-300 dark:text-slate-600 border border-transparent cursor-not-allowed opacity-50"
                   : "bg-linear-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white border border-transparent hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95 cursor-pointer"
               )}
             >
@@ -273,7 +272,7 @@ function QuestionCardImpl({ question }: Props) {
               </span>
             </motion.button>
             
-            {/* 👎 不同意按鈕：同樣只要投過任何一邊就被 disabled */}
+            {/* 👎 不同意按鈕 */}
             <motion.button
               type="button"
               onClick={handleDisagree}
@@ -284,8 +283,8 @@ function QuestionCardImpl({ question }: Props) {
                 "text-xs font-bold tracking-wide transition-all duration-300 shadow-sm",
                 hasVotedAny
                   ? alreadyDisliked
-                    ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-transparent cursor-not-allowed" // 自己投的按鈕樣式
-                    : "bg-slate-100/50 dark:bg-slate-800/30 text-slate-300 dark:text-slate-600 border border-transparent cursor-not-allowed opacity-50" // 投了另一邊而被禁用的樣式
+                    ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-transparent cursor-not-allowed"
+                    : "bg-slate-100/50 dark:bg-slate-800/30 text-slate-300 dark:text-slate-600 border border-transparent cursor-not-allowed opacity-50"
                   : "bg-linear-to-r from-rose-600 to-red-500 hover:from-rose-500 hover:to-red-500 text-white border border-transparent hover:shadow-lg hover:shadow-rose-500/20 active:scale-95 cursor-pointer"
               )}
             >
