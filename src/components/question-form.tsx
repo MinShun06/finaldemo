@@ -74,7 +74,7 @@ export function QuestionForm() {
       <Textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        placeholder="想問什麼？匿名發問，全班都看得到..."
+        placeholder="發起新提案（限 500 字內）"
         maxLength={MAX}
         rows={3}
         disabled={submitting}
@@ -157,9 +157,9 @@ export function QuestionForm() {
                 />
                 <span>送出中</span>
               </>
-            ) : (
+                ) : (
               <>
-                <span>送出問題</span>
+                <span>送出提案</span>
                 <motion.span
                   aria-hidden
                   className="inline-block"

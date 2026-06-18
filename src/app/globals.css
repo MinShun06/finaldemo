@@ -325,6 +325,12 @@
   mix-blend-mode: screen;
 }
 
+/* 微幅漸層流動（用於 hover 時的輕微動畫） */
+.gradient-flow {
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
 /* 表單成功送出 flash ring */
 .flash-ring {
   position: absolute;

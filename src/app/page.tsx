@@ -85,11 +85,9 @@ export default function Home() {
               hidden: { opacity: 0, y: 14 },
               show: { opacity: 1, y: 0 },
             }}
-            className="font-display text-5xl leading-[0.95] tracking-tight sm:text-6xl"
+            className="font-display text-4xl leading-[0.95] tracking-tight sm:text-5xl"
           >
-            <span className="italic">Class</span>
-            <span>Wall</span>
-            <span className="text-primary">.</span>
+            校園匿名提案與連署牆
           </motion.h1>
 
           <motion.p
@@ -99,11 +97,11 @@ export default function Home() {
             }}
             className="max-w-2xl text-[15px] leading-relaxed text-muted-foreground sm:text-base"
           >
-            一道屬於這間教室的匿名問答牆——
+            一道屬於校園的匿名提案與連署牆——
             <span className="font-display italic text-foreground">
-              想問什麼，就大方問
+              提案、附議、一起推動改變
             </span>
-            。 即時同步、按讚衝榜、誰都看得到。
+            。 即時同步、附議計數、公平公開。
           </motion.p>
 
           <motion.div
@@ -113,7 +111,7 @@ export default function Home() {
             }}
             className="flex flex-wrap items-center gap-2 pt-1"
           >
-            <StatsPill label="問題" value={questions.length} />
+            <StatsPill label="提案" value={questions.length} />
             <StatsPill label="總 +1" value={totalLikes} accent />
             <span className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/60 backdrop-blur-md px-3 py-1.5 text-[12px]">
               <span className="live-dot" aria-hidden />
@@ -166,12 +164,12 @@ export default function Home() {
         </motion.header>
 
         {/* ============ 發問區 ============ */}
-        <section aria-label="發問區">
+        <section aria-label="提案區">
           <QuestionForm />
         </section>
 
         {/* ============ 問題列表 ============ */}
-        <section aria-label="問題列表" className="flex flex-col gap-3">
+        <section aria-label="提案列表" className="flex flex-col gap-3">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -179,7 +177,7 @@ export default function Home() {
             className="flex items-baseline justify-between gap-3"
           >
             <h2 className="font-display text-2xl tracking-tight sm:text-3xl">
-              牆上的問題
+              牆上的提案
             </h2>
             <span className="text-[11px] uppercase tracking-wider text-muted-foreground">
               依讚數排序 · 每頁 {PAGE_SIZE} 題
@@ -199,7 +197,7 @@ export default function Home() {
               className="rounded-2xl border border-dashed border-border/70 bg-card/40 py-16 text-center"
             >
               <p className="font-display text-2xl italic text-muted-foreground">
-                還沒有人發問
+                還沒有人發起提案
               </p>
               <p className="mt-2 text-sm text-muted-foreground/80">
                 你來當第一個 ✨

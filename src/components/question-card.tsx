@@ -109,8 +109,9 @@ function QuestionCardImpl({ question }: Props) {
           "group relative overflow-hidden rounded-2xl bg-card text-card-foreground",
           "border border-border/70 p-5 sm:p-6",
           "shadow-[0_1px_0_oklch(0.92_0.02_70_/_0.4),0_8px_24px_-12px_oklch(0.5_0.05_45_/_0.18)]",
-          "transition-[transform,border-color,box-shadow] duration-300 ease-out",
+          "transition-[transform,border-color,box-shadow,background-position] duration-300 ease-out",
           "hover:border-primary/40 hover:shadow-[0_4px_0_oklch(0.92_0.02_70_/_0.3),0_18px_40px_-16px_oklch(0.62_0.18_38_/_0.35)]",
+          "hover:bg-linear-to-r hover:from-primary/8 hover:to-transparent hover:gradient-flow",
           "will-change-transform",
           isHot && "border-primary/30"
         )}
@@ -237,7 +238,7 @@ function QuestionCardImpl({ question }: Props) {
             >
               <span aria-hidden>{alreadyLiked ? "✓" : "👍"}</span>
               <span>
-                {alreadyLiked ? "已 +1" : "我也想問"} ·{" "}
+                {alreadyLiked ? "已附議" : "附議連署"} ·{" "}
                 <motion.span
                   key={question.likes}
                   initial={{ y: -6, opacity: 0 }}
