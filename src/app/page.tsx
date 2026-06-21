@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { QuestionCard } from "@/components/question-card";
 import { QuestionForm } from "@/components/question-form";
@@ -25,6 +26,19 @@ export default function Home() {
   const { questions, loading, loadingMore, hasMore, error, loadMore } =
     useQuestions(PAGE_SIZE);
   const spotlightRef = useRef<HTMLDivElement>(null);
+
+  const router = useRouter();
+
+  // 若使用者尚未設定暱稱，導向登入頁面填寫暱稱
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const nickname = sessionStorage.getItem("user_nickname");
+    if (!nickname) {
+      router.push("/login");
+    }
+    // 只在 mount 時檢查
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 滑鼠跟隨光暈：直接寫 CSS var，零 React 介入
   useEffect(() => {
