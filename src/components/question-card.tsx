@@ -211,14 +211,19 @@ function QuestionCardImpl({ question }: Props) {
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="text-[11px] font-mono tracking-wider text-slate-400 dark:text-slate-500">
-              {new Date(question.created_at).toLocaleString("zh-TW", {
-                month: "2-digit",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-semibold text-indigo-400">
+                {question.nickname || "匿名同學"}
+              </span>
+              <span className="text-[11px] font-mono tracking-wider text-slate-400 dark:text-slate-500">
+                {new Date(question.created_at).toLocaleString("zh-TW", {
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            </div>
             <motion.button
               type="button"
               onClick={() => setExpanded((v) => !v)}
