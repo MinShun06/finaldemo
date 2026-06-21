@@ -18,7 +18,7 @@ export default function Home() {
 
   const themes: Record<string, string> = {
     space: "bg-slate-950 text-slate-100 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black",
-    cyber: "bg-zinc-950 text-zinc-50 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-950/20 via-zinc-950 to-black",
+    cyber: "bg-black text-yellow-300 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-yellow-500/10 via-yellow-600/5 to-black",
     minimal: "bg-stone-50 text-stone-900 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-50/50 via-stone-50 to-stone-100",
     aurora: "bg-emerald-950 text-emerald-50 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-teal-950/30 via-slate-950 to-black",
   };
@@ -96,7 +96,7 @@ export default function Home() {
               className={cn(
                 "inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium",
                 bgTheme === "cyber"
-                  ? "bg-violet-600 text-white"
+                  ? "bg-yellow-400 text-black"
                   : "bg-white/6 text-white/90 hover:bg-white/10"
               )}
             >
