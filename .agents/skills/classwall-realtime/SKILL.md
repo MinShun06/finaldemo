@@ -1,12 +1,12 @@
 ---
 name: classwall-realtime
-description: ClassWall Supabase Realtime channel cleanup 守則。Triggers when user (1) 編輯或新增包含 `supabase.channel(` 的檔案, (2) 提到「realtime」/「subscribe」/「postgres_changes」/「channel」, (3) 在 useEffect 裡操作 Supabase subscription, (4) 新增需要即時更新的頁面或 component. Does NOT trigger for 一般 useEffect 使用或非 Supabase 的 WebSocket / EventSource.
+description: NKUST 匿名問答牆 Supabase Realtime channel cleanup 守則。Triggers when user (1) 編輯或新增包含 `supabase.channel(` 的檔案, (2) 提到「realtime」/「subscribe」/「postgres_changes」/「channel」, (3) 在 useEffect 裡操作 Supabase subscription, (4) 新增需要即時更新的頁面或 component. Does NOT trigger for 一般 useEffect 使用或非 Supabase 的 WebSocket / EventSource.
 version: 1.0
 ---
 
-# ClassWall Realtime Cleanup
+# NKUST 匿名問答牆 Realtime Cleanup
 
-ClassWall 用 Supabase Realtime 同步 `questions` / `answers` 兩張表。處理 channel 訂閱時務必遵守以下守則，否則會造成記憶體洩漏與重複觸發。
+NKUST 匿名問答牆 用 Supabase Realtime 同步 `questions` / `answers` 兩張表。處理 channel 訂閱時務必遵守以下守則，否則會造成記憶體洩漏與重複觸發。
 
 ## 核心規則
 

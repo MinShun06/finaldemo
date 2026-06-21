@@ -1,6 +1,6 @@
-# 🎮 AI 程式開發實戰 — ClassWall 匿名問答牆
+# 🎮 AI 程式開發實戰 — NKUST 匿名問答牆
 
-5 小時，從 0 到上線，用 GitHub Copilot 帶你做出一個可以給全班用的網站 —— **ClassWall 匿名問答牆**。
+5 小時，從 0 到上線，用 GitHub Copilot 帶你做出一個可以給全班用的網站 —— **NKUST 匿名問答牆**。
 
 > 完整課程（Notion）：[🎮 AI 程式開發實戰](https://www.notion.so/AI-2fdad1e31336800ea9a1efb7069d7659)
 
@@ -67,18 +67,18 @@
 
 選一種：
 
-- **學生（推薦）**：在 GitHub 按 [Use this template](https://github.com/) → 建你自己的 `classwall` repo → clone
+- **學生（推薦）**：在 GitHub 按 [Use this template](https://github.com/) → 建你自己的 `nkust-anon-wall` repo → clone
 - **直接 clone**：
   ```bash
-  git clone https://github.com/<你的帳號>/classwall.git
-  cd classwall
+  git clone https://github.com/<你的帳號>/nkust-anon-wall.git
+  cd nkust-anon-wall
   ```
 
 > Git / PR 流程不熟？先看 [Step 1.5：Git + PR 深入教學](https://www.notion.so/2fdad1e3133680448352c0749d5a579d)，後面會反覆用到。
 
 ### 2. 建 Supabase 專案（對應 [Step 2](https://www.notion.so/34aad1e3133681378631d3d180f37c13)）
 
-到 [supabase.com/dashboard](https://supabase.com/dashboard) → **New project** → 命名 `classwall` → 地區選 **Tokyo / Singapore** → 建立。
+到 [supabase.com/dashboard](https://supabase.com/dashboard) → **New project** → 命名 `nkust-anon-wall` → 地區選 **Tokyo / Singapore** → 建立。
 
 等專案 ready：
 
@@ -102,7 +102,7 @@
 - `NEXT_PUBLIC_SUPABASE_URL` = 上一步的 Project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = 上一步的 anon key
 
-按 **Deploy**，1～2 分鐘後拿到 `https://classwall-<你的名字>.vercel.app`，手機就打得開！
+按 **Deploy**，1～2 分鐘後拿到 `https://nkust-anon-wall-<你的名字>.vercel.app`，手機就打得開！
 
 > 之後每次 `git push` 進 main，Vercel 都會**自動重新部署**。
 
@@ -119,7 +119,7 @@ npm run dev                 # → http://localhost:3000
 
 打開 localhost:3000 應該看到：
 
-- 🎯 ClassWall 漸層標題
+- 🎯 NKUST 漸層標題
 - 發問表單
 - Seed 那筆問題
 - 按 +1 → likes 即時 +1（[Step 5](https://www.notion.so/34aad1e3133681fda623e60a62b8fa32) 會拆解為什麼）

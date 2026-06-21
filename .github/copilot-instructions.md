@@ -1,5 +1,4 @@
-# ClassWall — Copilot Instructions
-
+# NKUST 匿名問答牆 — Copilot Instructions
 > 5 小時「AI 程式開發實戰」課程的成品 starter。教學優先：**程式碼好讀、好拆解、好用 Copilot 改造**。
 > 規範 source of truth 是專案根目錄的 `AGENTS.md`；本檔是給 GitHub Copilot 的衍生簡化版，兩邊不一致時以 `AGENTS.md` 為準。
 

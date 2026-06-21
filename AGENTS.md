@@ -6,7 +6,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 <!-- END:nextjs-agent-rules -->
 
-# ClassWall — Agents Guide
+# NKUST 匿名問答牆 — Agents Guide
 
 5 小時「AI 程式開發實戰」課程的成品 starter。教學用途優先：**程式碼要好讀、好拆解、好用 Copilot 改造**。
 
@@ -75,7 +75,7 @@ supabase/migrations/0001_init.sql   schema + RLS + Realtime + 按讚 RPC + seed
 - **不要 commit `.env.local`** — `.gitignore` 已擋，但 review 時還是要看
 - **不要在前端用 `service_role` key** — 只能用 `anon` key
 - **不要新增 `tailwind.config.js`** — 此專案使用 Tailwind v4 inline theme
-- **不要把 ClassWall 的核心邏輯重構成過度抽象**（教學用，淺顯易懂優先）
+- **不要把 NKUST 匿名問答牆 的核心邏輯重構成過度抽象**（教學用，淺顯易懂優先）
 - **不要把 page/component 命名改成英文** — 學生看的是中文教材，UI 文案保持中文
 - **不要還原 anon UPDATE 權限** — 按讚一律走 RPC，否則 `likes` 會被前端任意 PATCH 偽造
 

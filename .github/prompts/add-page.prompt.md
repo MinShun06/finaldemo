@@ -19,7 +19,7 @@ description: "新增一個 Next.js App Router 頁面"
 - metadata 範例：
   ```tsx
   export const metadata = {
-    title: "頁面標題 · ClassWall",
+    title: "頁面標題 · NKUST 匿名問答牆",
     description: "...",
   };
   ```

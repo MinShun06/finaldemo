@@ -21,16 +21,16 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "ClassWall · 匿名問答牆",
+  title: "NKUST 匿名問答牆 | 高科大專屬交流平台",
   description:
-    "5 小時 AI 程式開發實戰：用 Next.js + Supabase + Copilot 打造的匿名問答牆。",
+    "5 小時 AI 程式開發實戰：用 Next.js + Supabase + Copilot 打造的 NKUST 匿名問答牆。",
 };
 
 // 防止 FOUC：hydration 前先依 localStorage / 系統偏好套上 .dark
 const themeInitScript = `
 (function(){
   try {
-    var t = localStorage.getItem("classwall:theme");
+    var t = localStorage.getItem("nkust:theme");
     var sys = window.matchMedia("(prefers-color-scheme: dark)").matches;
     var dark = t === "dark" || (!t && sys);
     if (dark) document.documentElement.classList.add("dark");

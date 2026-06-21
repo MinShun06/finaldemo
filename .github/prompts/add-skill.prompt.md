@@ -9,7 +9,7 @@ description: "新增一個雙邊（Copilot + Claude Code）通用的 skill / 規
 ## 步驟
 
 1. 詢問我四件事：
-   - `name`（kebab-case，例如 `classwall-realtime`）
+   - `name`（kebab-case，例如 `nkust-realtime`）
    - 這個規則「何時該觸發」（檔案類型 / 關鍵字 / 場景）
    - 規則內容（守則、checklist、好 / 壞範例）
    - 觸發範圍：**全域**（整個 repo）還是**檔案層級**（特定 glob）
