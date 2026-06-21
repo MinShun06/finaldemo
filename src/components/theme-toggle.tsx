@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
-const STORAGE_KEY = "classwall:theme";
+const STORAGE_KEY = "nkust:theme";
 
 type Theme = "light" | "dark";
 

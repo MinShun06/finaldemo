@@ -1,6 +1,6 @@
 // 按讚 / 反對紀錄：跨 tab/重開仍生效，與 DB 端 question_likes / question_dislikes 去重對齊
-const LIKE_KEY = "classwall:liked";
-const DISLIKE_KEY = "classwall:disliked";
+const LIKE_KEY = "nkust:liked";
+const DISLIKE_KEY = "nkust:disliked";
 
 function read(key: string): Set<string> {
   if (typeof window === "undefined") return new Set();

@@ -1,10 +1,7 @@
--- ClassWall 匿名問答牆 schema（含按讚硬化）
--- 整檔冪等：可重複執行不會 mutate data / 不會重複 grant
--- 在 Supabase Dashboard → SQL Editor 貼整段，或 `supabase db push` 自動套用
+-- NKUST 匿名問答牆 schema（含按讚硬化）
 
--- 1. questions 表
-create table if not exists public.questions (
-  id uuid primary key default gen_random_uuid(),
+insert into public.questions (content, likes)
+values ('歡迎來到 NKUST 匿名問答牆！按下「我也想問 +1」試試看 🎉', 0)
   content text not null check (char_length(content) between 1 and 500),
   likes integer not null default 0 check (likes >= 0),
   created_at timestamptz not null default now()
@@ -181,5 +178,5 @@ comment on function public.increment_question_dislike(uuid, text) is
 
 -- 7. seed：一筆示範資料
 insert into public.questions (content, likes)
-values ('歡迎來到 ClassWall！按下「我也想問 +1」試試看 🎉', 0)
+values ('歡迎來到 NKUST 匿名問答牆！按下「我也想問 +1」試試看 🎉', 0)
 on conflict do nothing;

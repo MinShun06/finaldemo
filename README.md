@@ -35,7 +35,7 @@
 
 - [前言](https://www.notion.so/2fdad1e3133680eeb434f8ef4aa390df)
 - [課前準備](https://www.notion.so/34aad1e313368104b9dedf9edc39f681) — 註冊 GitHub / Supabase / Vercel、安裝 Node、Git、VS Code + Copilot
-- [今天要做什麼：ClassWall 匿名問答牆](https://www.notion.so/ClassWall-34aad1e313368112bd65f911e5e881da)
+- [今天要做什麼：NKUST 匿名問答牆](https://www.notion.so/ClassWall-34aad1e313368112bd65f911e5e881da)
 
 ### 🧱 核心工具
 
@@ -97,7 +97,7 @@
 
 **這步直接拿到上線網址，不用先碰本地。**
 
-到 [vercel.com/new](https://vercel.com/new) → Import Git Repository → 選你的 `classwall` repo → 在 **Environment Variables** 區塊填上：
+到 [vercel.com/new](https://vercel.com/new) → Import Git Repository → 選你的 `nkust-anon-wall` repo → 在 **Environment Variables** 區塊填上：
 
 - `NEXT_PUBLIC_SUPABASE_URL` = 上一步的 Project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = 上一步的 anon key

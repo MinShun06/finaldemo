@@ -1,6 +1,6 @@
 // 一個瀏覽器設定檔一個 UUID，存 localStorage 跨 tab/重開仍有效
 // 隱私模式 / 清快取會重新產生；對教學情境可接受
-const KEY = "classwall:anon-id";
+const KEY = "nkust:anon-id";
 
 export function getAnonId(): string {
   if (typeof window === "undefined") return "";
