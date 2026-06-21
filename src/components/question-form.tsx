@@ -28,9 +28,14 @@ export function QuestionForm() {
     setSubmitting(true);
     setError(null);
 
+    // 從 sessionStorage 取得暱稱，若無則預設為「匿名同學」
+    const nickname =
+      (typeof window !== "undefined" && sessionStorage.getItem("user_nickname")) ||
+      "匿名同學";
+
     const { error: insertError } = await supabase
       .from("questions")
-      .insert({ content: trimmed });
+      .insert({ content: trimmed, nickname });
 
     setSubmitting(false);
     if (insertError) {
