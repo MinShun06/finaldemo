@@ -173,12 +173,12 @@ function QuestionCardImpl({ question }: Props) {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         className={cn(
-          "group relative overflow-hidden rounded-2xl p-6 sm:p-7",
+          "group relative overflow-hidden rounded-2xl",
           "transition-all duration-300 will-change-transform",
-          "bg-white/90 dark:bg-slate-900/80 text-slate-800 dark:text-slate-100",
-          "border border-slate-200/60 dark:border-slate-800/80",
-          "hover:scale-[1.02] hover:shadow-2xl hover:shadow-indigo-500/10 dark:hover:shadow-violet-500/10",
-          "hover:bg-linear-to-r hover:from-indigo-500/5 hover:to-transparent hover:gradient-flow",
+          // 新樣式：毛玻璃 + 精緻邊框 + 輕微 hover 放大
+          "bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/60 dark:border-slate-800/60",
+          "shadow-xs p-6 hover:shadow-lg hover:scale-[1.01]",
+          "text-slate-800 dark:text-slate-100",
           isHot && "border-amber-500/40 shadow-amber-500/5"
         )}
         style={{ transformStyle: "preserve-3d" }}
@@ -193,37 +193,28 @@ function QuestionCardImpl({ question }: Props) {
           )}
         />
 
-        <p className={cn("whitespace-pre-wrap text-[15px] leading-[1.8] sm:text-base font-medium")}>
-          {isHot ? (
-            <motion.span
-              aria-hidden
-              className="mr-2 inline-block origin-center"
-              animate={{ rotate: [-8, 10, -8] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              🔥
-            </motion.span>
-          ) : (
-            <span className="mr-2 text-indigo-500 dark:text-indigo-400 font-bold">#</span>
-          )}
-          {question.content}
-        </p>
-
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-semibold text-indigo-400">
-                {question.nickname || "匿名同學"}
-              </span>
-              <span className="text-[11px] font-mono tracking-wider text-slate-400 dark:text-slate-500">
-                {new Date(question.created_at).toLocaleString("zh-TW", {
-                  month: "2-digit",
-                  day: "2-digit",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </span>
+        {/* 頂部：大頭貼 + 暱稱 */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-violet-500 text-white text-lg">👤</span>
             </div>
+            <div className="min-w-0">
+              <div className="flex flex-col">
+                <span className="text-base font-bold text-slate-800 dark:text-slate-100 truncate">{question.nickname || "匿名同學"}</span>
+                <span className="text-xs text-slate-400 dark:text-slate-500">
+                  {new Date(question.created_at).toLocaleString("zh-TW", {
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="ml-4 flex items-start gap-2">
             <motion.button
               type="button"
               onClick={() => setExpanded((v) => !v)}
@@ -247,23 +238,26 @@ function QuestionCardImpl({ question }: Props) {
                 ▼
               </motion.span>
             </motion.button>
-            {role === "admin" ? (
-              <motion.button
-                type="button"
-                onClick={handleDelete}
-                whileTap={{ scale: 0.94 }}
-                className={cn(
-                  "ml-3 relative inline-flex min-h-10 items-center gap-2 rounded-xl px-3.5 py-2",
-                  "text-xs font-semibold tracking-wide transition-all duration-300",
-                  "bg-red-600 hover:bg-red-700 text-white border border-transparent shadow-sm"
-                )}
-              >
-                <span aria-hidden>🗑️</span>
-                <span> 刪除議題</span>
-              </motion.button>
-            ) : null}
           </div>
+        </div>
 
+        <p className={cn("whitespace-pre-wrap text-slate-700 dark:text-slate-200 text-sm md:text-base leading-relaxed my-4 font-medium")}>
+          {isHot ? (
+            <motion.span
+              aria-hidden
+              className="mr-2 inline-block origin-center"
+              animate={{ rotate: [-8, 10, -8] }}
+              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              🔥
+            </motion.span>
+          ) : (
+            <span className="mr-2 text-indigo-500 dark:text-indigo-400 font-bold">#</span>
+          )}
+          {question.content}
+        </p>
+
+        <div className="mt-2">
           <div className="relative">
             {burstKey > 0 ? (
               <span
@@ -352,6 +346,24 @@ function QuestionCardImpl({ question }: Props) {
             </motion.button>
           </div>
         </div>
+
+        {/* 管理員刪除按鈕：右下角（絕對定位） */}
+        {role === "admin" ? (
+          <motion.button
+            type="button"
+            onClick={handleDelete}
+            whileTap={{ scale: 0.94 }}
+            className={cn(
+              "absolute right-4 bottom-4",
+              "bg-rose-50/80 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400",
+              "border border-rose-200/50 dark:border-rose-800/30 px-3 py-1.5 rounded-xl text-xs font-bold tracking-wide",
+              "shadow-xs hover:bg-rose-600 hover:text-white transition-all flex items-center gap-1.5"
+            )}
+          >
+            <span aria-hidden>🗑️</span>
+            <span>刪除</span>
+          </motion.button>
+        ) : null}
 
         <AnimatePresence initial={false}>
           {expanded ? (
